@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAUDOC - Portones Automáticos de Calidad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <img src="assets/logo/paudoc_logo.png" alt="PAUDOC Logo" class="logo-img">
+                <span class="logo-text">PAUDOC</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#materiales">Materiales</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="container">
+                <h1>Portones Automáticos de Calidad Superior</h1>
+                <p>Seguridad, elegancia y tecnología de vanguardia para tu hogar o empresa</p>
+                <a href="#contacto" class="cta-button">Solicitar Cotización</a>
+            </div>
+        </section>
+
+        <section id="servicios" class="services">
+            <div class="container">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h3>Instalación Profesional</h3>
+                        <p>Instalamos tu portón automático con la más alta calidad y precisión técnica.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <h3>Mantenimiento</h3>
+                        <p>Servicio de mantenimiento preventivo y correctivo para garantizar el funcionamiento óptimo.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Garantía Extendida</h3>
+                        <p>Ofrecemos garantía extendida en todos nuestros productos y servicios.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="materiales" class="color-selector">
+            <div class="container">
+                <h2 class="section-title">Selecciona el Material de tu Portón</h2>
+                <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem;">
+                    Elige entre nuestra variedad de acabados premium
+                </p>
+                <div class="gate-options">
+                    <div class="gate-option active" data-gate="blanco_cuadro" title="Blanco Cuadro">
+                        <img src="assets/portones/blanco_cuadro.png" alt="Blanco Cuadro" class="gate-thumb">
+                        <span class="gate-label">Blanco Cuadro</span>
+                    </div>
+                    <div class="gate-option" data-gate="blanco_liso" title="Blanco Liso">
+                        <img src="assets/portones/blanco_liso.png" alt="Blanco Liso" class="gate-thumb">
+                        <span class="gate-label">Blanco Liso</span>
+                    </div>
+                    <div class="gate-option" data-gate="chocolate_liso" title="Chocolate Liso">
+                        <img src="assets/portones/chocolate_liso.png" alt="Chocolate Liso" class="gate-thumb">
+                        <span class="gate-label">Chocolate</span>
+                    </div>
+                    <div class="gate-option" data-gate="machimbre_duela" title="Machimbre Duela">
+                        <img src="assets/portones/machimbre_duela.png" alt="Machimbre Duela" class="gate-thumb">
+                        <span class="gate-label">Machimbre</span>
+                    </div>
+                    <div class="gate-option" data-gate="madera_oscuro" title="Madera Oscuro">
+                        <img src="assets/portones/madera_oscuro.png" alt="Madera Oscuro" class="gate-thumb">
+                        <span class="gate-label">Madera Oscura</span>
+                    </div>
+                    <div class="gate-option" data-gate="roble_claro" title="Roble Claro">
+                        <img src="assets/portones/roble_claro.png" alt="Roble Claro" class="gate-thumb">
+                        <span class="gate-label">Roble Claro</span>
+                    </div>
+                    <div class="gate-option" data-gate="roble_oscuro" title="Roble Oscuro">
+                        <img src="assets/portones/roble_oscuro.png" alt="Roble Oscuro" class="gate-thumb">
+                        <span class="gate-label">Roble Oscuro</span>
+                    </div>
+                </div>
+                
+                <div class="gate-display">
+                    <div class="gate-preview">
+                        <img src="assets/portones/blanco_cuadro.png" alt="Portón Seleccionado" id="gateMainImage" class="gate-main-image">
+                    </div>
+                    <div class="gate-info-card" id="gateInfo">
+                        <h3 id="gateTitle">Blanco Cuadro</h3>
+                        <div class="gate-details">
+                            <div class="gate-spec">
+                                <i class="fas fa-palette"></i>
+                                <span>Acabado: <strong id="gateFinish">Blanco mate con diseño cuadrado</strong></span>
+                            </div>
+                            <div class="gate-spec">
+                                <i class="fas fa-ruler"></i>
+                                <span>Material: <strong id="gateMaterial">Acero galvanizado</strong></span>
+                            </div>
+                            <div class="gate-spec">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Garantía: <strong>5 años</strong></span>
+                            </div>
+                            <div class="gate-spec">
+                                <i class="fas fa-cog"></i>
+                                <span>Sistema: <strong>Automatización incluida</strong></span>
+                            </div>
+                        </div>
+                        <div class="gate-price">
+                            <span class="price-label">Precio desde:</span>
+                            <span class="price-value" id="gatePrice">$25,000 MXN</span>
+                        </div>
+                        <button class="quote-btn">
+                            <i class="fas fa-calculator"></i>
+                            Solicitar Cotización
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="nosotros" class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>¿Por qué elegir PAUDOC?</h2>
+                        <p>Con más de 10 años de experiencia en el sector, somos líderes en la fabricación e instalación de portones automáticos de alta calidad.</p>
+                        <p>Nuestro compromiso es brindar seguridad, comodidad y elegancia a tu hogar o empresa con productos que combinan tecnología de vanguardia y diseños exclusivos.</p>
+                        <p>Contamos con un equipo de profesionales altamente capacitados y utilizamos únicamente materiales de primera calidad para garantizar la durabilidad y funcionamiento óptimo de nuestros productos.</p>
+                    </div>
+                    <div class="about-image">
+                        Espacio para imagen de la empresa
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="contact">
+            <div class="container">
+                <h2 class="section-title">Contacto</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Información de Contacto</h3>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+52 (55) 1234-5678</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contacto@paudoc.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Ciudad de México, México</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Lun - Vie: 8:00 AM - 6:00 PM<br>Sáb: 9:00 AM - 2:00 PM</span>
+                        </div>
+                    </div>
+                    <div class="contact-form">
+                        <h3>Solicitar Información</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Nombre completo</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Correo electrónico</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Teléfono</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Mensaje</label>
+                                <textarea id="message" name="message" placeholder="Cuéntanos sobre tu proyecto..." required></textarea>
+                            </div>
+                            <button type="submit" class="cta-button">Enviar Mensaje</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PAUDOC</h3>
+                    <p>Líderes en portones automáticos de alta calidad. Seguridad y elegancia para tu hogar.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#">Portones Residenciales</a></li>
+                        <li><a href="#">Portones Comerciales</a></li>
+                        <li><a href="#">Instalación</a></li>
+                        <li><a href="#">Mantenimiento</a></li>
+                        <li><a href="#">Reparaciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +52 (55) 1234-5678</li>
+                        <li><i class="fas fa-envelope"></i> contacto@paudoc.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Ciudad de México</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PAUDOC. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/5215512345678" class="whatsapp-float" target="_blank" aria-label="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>
