@@ -105,12 +105,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form submission handler
-document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Gracias por tu mensaje. Te contactaremos pronto.');
-    this.reset();
-});
+// Form submission handler (removed since contact form no longer exists)
+const contactForm = document.querySelector('form');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Gracias por tu mensaje. Te contactaremos pronto.');
+        this.reset();
+    });
+}
 
 // Enhanced scroll effect for header
 window.addEventListener('scroll', () => {
@@ -481,7 +484,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe all animated elements
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.service-card, .gate-option, .contact-item');
+    const animatedElements = document.querySelectorAll('.service-card, .gate-option, .branch-btn');
     animatedElements.forEach(el => observer.observe(el));
 });
 
@@ -1364,3 +1367,519 @@ if ('performance' in window) {
         console.log(`Page loaded in ${loadTime.toFixed(2)}ms`);
     });
 }
+
+// Locations Map Manager with OpenLayers
+class LocationsMapManager {
+    constructor() {
+        this.map = null;
+        this.vectorLayer = null;
+        this.currentBranch = 'monterrey';
+        
+        // Branch data with coordinates
+        this.branches = {
+            monterrey: {
+                name: 'PAUDOC Monterrey',
+                coords: [-100.3100941, 25.7065768], // [longitude, latitude]
+                address: 'José Mariano Salas 138, Col. Del Norte, Monterrey, N.L. 64500',
+                contact: 'Eduardo Carrillo',
+                phone: '+52 1 33 3033 0729',
+                status: 'Abierto',
+                type: 'Sede Principal'
+            },
+            queretaro: {
+                name: 'PAUDOC Querétaro',
+                coords: [-100.3642811, 20.6675726], // Exact coordinates for SAGON PORTONES location
+                address: 'Carretera a Chichimequillas KM.8, Bodega 5, Col. San José El Alto, Querétaro, Qro. 76147',
+                contact: 'Enrique Villegas',
+                phone: '+52 1 442 249 0489',
+                status: 'Abierto',
+                type: 'Centro de Distribución'
+            }
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        // Wait for OpenLayers to be available
+        if (typeof ol === 'undefined') {
+            setTimeout(() => this.init(), 100);
+            return;
+        }
+        
+        this.initMap();
+        this.bindEvents();
+        this.initAnimations();
+    }
+    
+    initMap() {
+        // Initialize the map
+        this.map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM({
+                        url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat(this.branches[this.currentBranch].coords),
+                zoom: 14,
+                maxZoom: 18,
+                minZoom: 10
+            }),
+            controls: []
+        });
+        
+        // Create vector layer for markers
+        this.vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
+        
+        this.map.addLayer(this.vectorLayer);
+        
+        // Add zoom control
+        this.map.addControl(new ol.control.Zoom());
+        
+        // Add custom branch selector control
+        this.addBranchSelectorControl();
+        
+        // Add markers for all branches
+        this.addBranchMarkers();
+        
+        // Add map interactions
+        this.addMapInteractions();
+        
+        // Style the map controls
+        this.styleMapControls();
+    }
+    
+    addBranchSelectorControl() {
+        // Create branch selector control element
+        const branchControl = document.createElement('div');
+        branchControl.className = 'ol-control map-branch-selector';
+        branchControl.innerHTML = `
+            <div class="map-branch-buttons">
+                <button class="map-branch-btn active" data-branch="monterrey">
+                    <span>Monterrey</span>
+                </button>
+                <button class="map-branch-btn" data-branch="queretaro">
+                    <span>Querétaro</span>
+                </button>
+            </div>
+        `;
+        
+        // Style the control
+        branchControl.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 8px;
+            z-index: 1000;
+        `;
+        
+        // Add event listeners to buttons
+        const buttons = branchControl.querySelectorAll('.map-branch-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const branchId = button.getAttribute('data-branch');
+                this.switchBranch(branchId);
+                
+                // Update button states
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+        
+        // Add control directly to map
+        this.map.getTargetElement().appendChild(branchControl);
+    }
+    
+    addBranchMarkers() {
+        Object.entries(this.branches).forEach(([key, branch]) => {
+            const feature = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat(branch.coords)),
+                branchId: key,
+                branchData: branch
+            });
+            
+            // Create custom marker style
+            const markerStyle = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [12, 29],
+                    anchorXUnits: 'pixels',
+                    anchorYUnits: 'pixels',
+                    src: this.createMarkerSVG(key === this.currentBranch)
+                })
+            });
+            
+            feature.setStyle(markerStyle);
+            this.vectorLayer.getSource().addFeature(feature);
+        });
+    }
+    
+    createMarkerSVG(isActive) {
+        const color = isActive ? '#025028' : '#D57B01';
+        const size = isActive ? 40 : 32;
+        
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+            <svg width="${size}" height="${size * 1.2}" viewBox="0 0 24 29" xmlns="http://www.w3.org/2000/svg">
+                <path fill="${color}" stroke="white" stroke-width="2" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="3" fill="white"/>
+                ${isActive ? '<circle cx="12" cy="9" r="2" fill="' + color + '"/>' : ''}
+            </svg>
+        `)}`;
+    }
+    
+    addMapInteractions() {
+        // Create tooltip element
+        this.createTooltip();
+        
+        // Click interaction for markers
+        this.map.on('click', (evt) => {
+            const feature = this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
+                return feature;
+            });
+            
+            if (feature && feature.get('branchId')) {
+                this.switchBranch(feature.get('branchId'));
+            }
+        });
+        
+        // Hover interaction for markers with tooltip
+        this.map.on('pointermove', (evt) => {
+            const feature = this.map.forEachFeatureAtPixel(evt.pixel, (feature) => {
+                return feature;
+            });
+            
+            if (feature && feature.get('branchId')) {
+                this.map.getTargetElement().style.cursor = 'pointer';
+                this.showTooltip(evt, feature.get('branchData'));
+            } else {
+                this.map.getTargetElement().style.cursor = '';
+                this.hideTooltip();
+            }
+        });
+    }
+    
+    createTooltip() {
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'map-tooltip';
+        this.tooltip.style.cssText = `
+            position: absolute;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            font-size: 0.9rem;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--primary-green);
+            max-width: 250px;
+        `;
+        document.body.appendChild(this.tooltip);
+    }
+    
+    showTooltip(evt, branchData) {
+        const pixel = this.map.getEventPixel(evt.originalEvent);
+        const coordinate = this.map.getCoordinateFromPixel(pixel);
+        const mapElement = this.map.getTargetElement();
+        const mapRect = mapElement.getBoundingClientRect();
+        
+        this.tooltip.innerHTML = `
+            <div style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-map-marker-alt" style="color: var(--primary-orange);"></i>
+                ${branchData.name}
+            </div>
+            <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">
+                ${branchData.type}
+            </div>
+            <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.4;">
+                <i class="fas fa-phone" style="width: 12px; margin-right: 6px; color: var(--primary-orange);"></i>
+                ${branchData.contact}
+            </div>
+        `;
+        
+        const x = mapRect.left + pixel[0] + 15;
+        const y = mapRect.top + pixel[1] - this.tooltip.offsetHeight - 15;
+        
+        this.tooltip.style.left = x + 'px';
+        this.tooltip.style.top = y + 'px';
+        this.tooltip.style.opacity = '1';
+        this.tooltip.style.transform = 'translateY(0)';
+    }
+    
+    hideTooltip() {
+        if (this.tooltip) {
+            this.tooltip.style.opacity = '0';
+            this.tooltip.style.transform = 'translateY(10px)';
+        }
+    }
+    
+    styleMapControls() {
+        // Add custom styles to map controls
+        const zoomControls = document.querySelectorAll('.ol-zoom button');
+        zoomControls.forEach(button => {
+            button.style.transition = 'all 0.2s ease';
+        });
+    }
+    
+    bindEvents() {
+        // Branch selector buttons
+        const branchButtons = document.querySelectorAll('.branch-btn');
+        branchButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const branchId = button.getAttribute('data-branch');
+                this.switchBranch(branchId);
+            });
+        });
+    }
+    
+    switchBranch(branchId) {
+        if (!this.branches[branchId] || branchId === this.currentBranch) return;
+        
+        const oldBranch = this.currentBranch;
+        this.currentBranch = branchId;
+        
+        // Update UI
+        this.updateBranchSelector();
+        this.updateBranchDetails();
+        this.animateMapTransition();
+        
+        // Update markers
+        this.updateMarkers(oldBranch, branchId);
+    }
+    
+    updateBranchSelector() {
+        const buttons = document.querySelectorAll('.branch-btn');
+        buttons.forEach(button => {
+            const branchId = button.getAttribute('data-branch');
+            if (branchId === this.currentBranch) {
+                button.classList.add('active');
+                this.addButtonAnimation(button);
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+    
+    updateBranchDetails() {
+        const details = document.querySelectorAll('.branch-detail');
+        details.forEach(detail => {
+            const branchId = detail.getAttribute('data-branch');
+            if (branchId === this.currentBranch) {
+                detail.classList.add('active');
+            } else {
+                detail.classList.remove('active');
+            }
+        });
+    }
+    
+    animateMapTransition() {
+        const branch = this.branches[this.currentBranch];
+        const view = this.map.getView();
+        
+        // Smooth animation to new location
+        view.animate({
+            center: ol.proj.fromLonLat(branch.coords),
+            zoom: 15,
+            duration: 1000,
+            easing: ol.easing.inAndOut
+        });
+    }
+    
+    updateMarkers(oldBranchId, newBranchId) {
+        const features = this.vectorLayer.getSource().getFeatures();
+        
+        features.forEach(feature => {
+            const branchId = feature.get('branchId');
+            const isActive = branchId === newBranchId;
+            
+            // Update marker style
+            const newStyle = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [12, 29],
+                    anchorXUnits: 'pixels',
+                    anchorYUnits: 'pixels',
+                    src: this.createMarkerSVG(isActive)
+                })
+            });
+            
+            feature.setStyle(newStyle);
+        });
+    }
+    
+    addButtonAnimation(button) {
+        // Add pulse animation
+        button.style.animation = 'pulse 0.6s ease-out';
+        setTimeout(() => {
+            button.style.animation = '';
+        }, 600);
+    }
+    
+    initAnimations() {
+        // Animate map container on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.animateMapEntrance();
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+        
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            observer.observe(mapContainer);
+        }
+    }
+    
+    animateMapEntrance() {
+        const mapElement = document.getElementById('map');
+        const detailsElement = document.querySelector('.branch-details');
+        
+        if (mapElement && detailsElement) {
+            mapElement.style.opacity = '0';
+            mapElement.style.transform = 'translateY(20px)';
+            
+            detailsElement.style.opacity = '0';
+            detailsElement.style.transform = 'translateX(20px)';
+            
+            setTimeout(() => {
+                mapElement.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                mapElement.style.opacity = '1';
+                mapElement.style.transform = 'translateY(0)';
+                
+                setTimeout(() => {
+                    detailsElement.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                    detailsElement.style.opacity = '1';
+                    detailsElement.style.transform = 'translateX(0)';
+                }, 200);
+            }, 300);
+        }
+    }
+    
+    // Utility method to center map on all branches
+    showAllBranches() {
+        const coordinates = Object.values(this.branches).map(branch => 
+            ol.proj.fromLonLat(branch.coords)
+        );
+        
+        if (coordinates.length > 0) {
+            const extent = ol.extent.boundingExtent(coordinates);
+            this.map.getView().fit(extent, {
+                padding: [50, 50, 50, 50],
+                duration: 1000
+            });
+        }
+    }
+}
+
+// Additional CSS for map animations
+const locationAnimationStyles = `
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.ol-control button {
+    transition: all 0.2s ease !important;
+}
+
+.ol-control button:hover {
+    background: var(--primary-green) !important;
+    color: white !important;
+}
+
+.ol-attribution {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+}
+
+.interactive-map {
+    border-radius: 20px 0 0 20px;
+    overflow: hidden;
+}
+
+.map-branch-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.map-branch-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    border: none;
+    background: #f8fafc;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+.map-branch-btn:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.map-branch-btn.active {
+    background: var(--primary-green);
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(2, 80, 40, 0.3);
+}
+
+@media (max-width: 1024px) {
+    .interactive-map {
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .map-branch-btn {
+        padding: 12px 16px;
+        min-width: 90px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .map-branch-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .map-branch-btn {
+        padding: 10px 14px;
+        min-width: 85px;
+        font-size: 0.8rem;
+    }
+}
+`;
+
+const locationStyleSheet = document.createElement('style');
+locationStyleSheet.textContent = locationAnimationStyles;
+document.head.appendChild(locationStyleSheet);
+
+// Initialize the locations map when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait a bit to ensure OpenLayers is loaded
+    setTimeout(() => {
+        const locationsMapManager = new LocationsMapManager();
+    }, 500);
+});

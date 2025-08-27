@@ -6,6 +6,7 @@
     <title>PAUDOC - Portones Automáticos de Calidad</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,7 +20,7 @@
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#materiales">Materiales</a></li>
                 <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#ubicaciones">Ubicaciones</a></li>
             </ul>
             <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -56,7 +57,7 @@
                                     </div>
                                 </div>
                                 <div class="slide-actions">
-                                    <a href="#contacto" class="cta-primary">
+                                    <a href="#ubicaciones" class="cta-primary">
                                         <span>Solicitar Cotización</span>
                                         <i class="fas fa-arrow-right"></i>
                                     </a>
@@ -111,7 +112,7 @@
                                     </div>
                                 </div>
                                 <div class="slide-actions">
-                                    <a href="#contacto" class="cta-primary">
+                                    <a href="#ubicaciones" class="cta-primary">
                                         <span>Cotización Empresarial</span>
                                         <i class="fas fa-arrow-right"></i>
                                     </a>
@@ -166,7 +167,7 @@
                                     </div>
                                 </div>
                                 <div class="slide-actions">
-                                    <a href="#contacto" class="cta-primary">
+                                    <a href="#ubicaciones" class="cta-primary">
                                         <span>Consulta Premium</span>
                                         <i class="fas fa-arrow-right"></i>
                                     </a>
@@ -380,7 +381,7 @@
                         <h3>¿Necesitas una solución personalizada?</h3>
                         <p>Nuestros especialistas están listos para diseñar la solución perfecta para tu proyecto</p>
                         <div class="cta-buttons">
-                            <a href="#contacto" class="cta-primary-btn">
+                            <a href="#ubicaciones" class="cta-primary-btn">
                                 <i class="fas fa-phone"></i>
                                 <span>Contactar Especialista</span>
                             </a>
@@ -728,7 +729,7 @@
                         <h3>¿Listo para transformar tu espacio?</h3>
                         <p>Únete a cientos de clientes satisfechos que confiaron en nuestra experiencia</p>
                         <div class="cta-actions">
-                            <a href="#contacto" class="cta-primary">
+                            <a href="#ubicaciones" class="cta-primary">
                                 <i class="fas fa-phone"></i>
                                 <span>Contactar Ahora</span>
                             </a>
@@ -747,50 +748,130 @@
             </div>
         </section>
 
-        <section id="contacto" class="contact">
-            <div class="container">
-                <h2 class="section-title">Contacto</h2>
-                <div class="contact-content">
-                    <div class="contact-info">
-                        <h3>Información de Contacto</h3>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+52 (55) 1234-5678</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>contacto@paudoc.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Ciudad de México, México</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-clock"></i>
-                            <span>Lun - Vie: 8:00 AM - 6:00 PM<br>Sáb: 9:00 AM - 2:00 PM</span>
-                        </div>
+        <section id="ubicaciones" class="locations">
+            <div class="locations-container">
+                <div class="locations-header">
+                    <span class="section-badge">📍 Nuestras Sucursales</span>
+                    <h2 class="section-title">Encuentra la sucursal más cercana</h2>
+                    <p class="section-subtitle">Contamos con dos ubicaciones estratégicas para brindarte el mejor servicio</p>
+                </div>
+                
+                <div class="branch-selector">
+                    <div class="branch-buttons">
+                        <button class="branch-btn active" data-branch="monterrey">
+                            <div class="branch-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="branch-info">
+                                <h3>Monterrey</h3>
+                                <span>Sede Principal</span>
+                            </div>
+                        </button>
+                        <button class="branch-btn" data-branch="queretaro">
+                            <div class="branch-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <div class="branch-info">
+                                <h3>Querétaro</h3>
+                                <span>Centro de Distribución</span>
+                            </div>
+                        </button>
                     </div>
-                    <div class="contact-form">
-                        <h3>Solicitar Información</h3>
-                        <form>
-                            <div class="form-group">
-                                <label for="name">Nombre completo</label>
-                                <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="map-container">
+                    <div id="map" class="interactive-map"></div>
+                    
+                    <div class="branch-details">
+                        <div class="branch-detail active" data-branch="monterrey">
+                            <div class="detail-card">
+                                <div class="detail-header">
+                                    <h3>PAUDOC Monterrey</h3>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div>
+                                            <strong>Dirección:</strong><br>
+                                            José Mariano Salas 138<br>
+                                            Col. Del Norte<br>
+                                            Monterrey, N.L. 64500
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-phone"></i>
+                                        <div>
+                                            <strong>Contacto:</strong><br>
+                                            Eduardo Carrillo<br>
+                                            <a href="tel:+5213330330729">33 3033 0729</a>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <div>
+                                            <strong>Horario:</strong><br>
+                                            Lun - Vie: 8:00 AM - 6:00 PM<br>
+                                            Sáb: 9:00 AM - 2:00 PM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-actions">
+                                    <a href="tel:+5213330330729" class="action-btn primary">
+                                        <i class="fas fa-phone"></i>
+                                        Llamar
+                                    </a>
+                                    <a href="https://wa.me/5213330330729" class="action-btn secondary" target="_blank">
+                                        <i class="fab fa-whatsapp"></i>
+                                        WhatsApp
+                                    </a>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Correo electrónico</label>
-                                <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="branch-detail" data-branch="queretaro">
+                            <div class="detail-card">
+                                <div class="detail-header">
+                                    <h3>PAUDOC Querétaro</h3>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div>
+                                            <strong>Dirección:</strong><br>
+                                            Carretera a Chichimequillas KM.8<br>
+                                            Bodega 5, Col. San José El Alto<br>
+                                            Querétaro, Qro. 76147
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-phone"></i>
+                                        <div>
+                                            <strong>Contacto:</strong><br>
+                                            Enrique Villegas<br>
+                                            <a href="tel:+5214422490489">442 249 0489</a>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <div>
+                                            <strong>Horario:</strong><br>
+                                            Lun - Vie: 8:00 AM - 6:00 PM<br>
+                                            Sáb: 9:00 AM - 2:00 PM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-actions">
+                                    <a href="tel:+5214422490489" class="action-btn primary">
+                                        <i class="fas fa-phone"></i>
+                                        Llamar
+                                    </a>
+                                    <a href="https://wa.me/5214422490489" class="action-btn secondary" target="_blank">
+                                        <i class="fab fa-whatsapp"></i>
+                                        WhatsApp
+                                    </a>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="phone">Teléfono</label>
-                                <input type="tel" id="phone" name="phone">
-                            </div>
-                            <div class="form-group">
-                                <label for="message">Mensaje</label>
-                                <textarea id="message" name="message" placeholder="Cuéntanos sobre tu proyecto..." required></textarea>
-                            </div>
-                            <button type="submit" class="cta-button">Enviar Mensaje</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -840,6 +921,7 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
